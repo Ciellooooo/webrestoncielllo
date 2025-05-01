@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restaurant Menu</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://images.unsplash.com/photo-1541542684-4b3c4e5ef24b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(30, 58, 138, 0.9);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      backdrop-filter: blur(5px);
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.7);
+      border: 2px solid #1d4ed8;
+      color: #1d4ed8;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+      backdrop-filter: blur(3px);
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: #0066cc;
+      color: white;
+    }
+
+    main {
+      display: flex;
+      padding: 2rem;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+      flex-wrap: wrap;
+    }
+
+    .menu-container {
+      flex: 3;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      overflow-y: auto;
+      padding-right: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .menu-item {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .menu-item.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .menu-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .menu-item-content {
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .menu-item-content h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+      color: #1e3a8a;
+    }
+
+    .menu-item-content p {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+
+    .menu-item-content span {
+      font-size: 1.2rem;
+      color: #e91e63;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .menu-item-content button {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .menu-item-content button:hover {
+      background: #0066cc;
+      box-shadow: 0 0 10px #1d4ed8, 0 0 20px #0066cc;
+    }
+
+    .order-list {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 15px;
+      padding: 1rem;
+      height: fit-content;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      backdrop-filter: blur(3px);
+    }
+
+    .order-list h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #1e3a8a;
+    }
+
+    .order-list ul {
+      list-style: none;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .order-list ul li {
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+    }
+
+    #totalPrice {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    input#tableNumber {
+      width: 100%;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .order-list button {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .send-btn {
+      background: #1d4ed8;
+      color: white;
+    }
+
+    .clear-btn {
+      background: #e11d48;
+      color: white;
+    }
+
+    footer {
+      margin-top: auto;
+      background: rgba(30, 58, 138, 0.9);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      backdrop-filter: blur(5px);
+    }
+
+    @media (max-width: 768px) {
+      main {
+        flex-direction: column;
+      }
+      .menu-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .menu-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  Our Menu
+</header>
+
+<nav>
+  <button class="filter-btn active" data-category="all">All</button>
+  <button class="filter-btn" data-category="food">Food</button>
+  <button class="filter-btn" data-category="drinks">Drinks</button>
+  <button class="filter-btn" data-category="desserts">Desserts</button>
+</nav>
+
+<main>
+  <div class="menu-container">
+    <!-- Menu Items -->
+    <div class="menu-item" data-category="food">
+      <img src="https://via.placeholder.com/300x200?text=Fried+Rice" alt="Fried Rice">
+      <div class="menu-item-content">
+        <h3>Special Fried Rice</h3>
+        <p>Fried rice with chicken, shrimp, and egg</p>
+        <span>$3</span>
+        <button onclick="addToOrder('Special Fried Rice')">Add to Order</button>
+      </div>
+    </div>
+
+    <div class="menu-item" data-category="drinks">
+      <img src="https://via.placeholder.com/300x200?text=Iced+Tea" alt="Iced Tea">
+      <div class="menu-item-content">
+        <h3>Sweet Iced Tea</h3>
+        <p>Refreshing sweet iced tea</p>
+        <span>$1</span>
+        <button onclick="addToOrder('Sweet Iced Tea')">Add to Order</button>
+      </div>
+    </div>
+
+    <div class="menu-item" data-category="desserts">
+      <img src="https://via.placeholder.com/300x200?text=Brownies" alt="Brownies">
+      <div class="menu-item-content">
+        <h3>Chocolate Brownies</h3>
+        <p>Soft and rich chocolate brownies</p>
+        <span>$2</span>
+        <button onclick="addToOrder('Chocolate Brownies')">Add to Order</button>
+      </div>
+    </div>
+
+    <div class="menu-item" data-category="food">
+      <img src="https://via.placeholder.com/300x200?text=Grilled+Chicken" alt="Grilled Chicken">
+      <div class="menu-item-content">
+        <h3>Honey Grilled Chicken</h3>
+        <p>Grilled chicken with honey sauce</p>
+        <span>$4</span>
+        <button onclick="addToOrder('Honey Grilled Chicken')">Add to Order</button>
+      </div>
+    </div>
+
+    <div class="menu-item" data-category="drinks">
+      <img src="https://via.placeholder.com/300x200?text=Coffee+Milk" alt="Coffee Milk">
+      <div class="menu-item-content">
+        <h3>Milk Coffee with Palm Sugar</h3>
+        <p>Creamy coffee with natural palm sugar</p>
+        <span>$2</span>
+        <button onclick="addToOrder('Milk Coffee with Palm Sugar')">Add to Order</button>
+      </div>
+    </div>
+
+    <div class="menu-item" data-category="desserts">
+      <img src="https://via.placeholder.com/300x200?text=Vanilla+Ice+Cream" alt="Vanilla Ice Cream">
+      <div class="menu-item-content">
+        <h3>Vanilla Ice Cream</h3>
+        <p>Homemade classic vanilla ice cream</p>
+        <span>$2</span>
+        <button onclick="addToOrder('Vanilla Ice Cream')">Add to Order</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="order-list">
+    <h2>Your Order</h2>
+    <ul id="orderItems"></ul>
+
+    <p id="totalPrice">Total: $0</p>
+
+    <input type="text" id="tableNumber" placeholder="Enter Table Number">
+
+    <button class="send-btn" onclick="sendOrder()">Send Order</button>
+    <button class="clear-btn" onclick="clearOrder()">Clear Order</button>
+  </aside>
+</main>
+
+<footer>
+  <p>Please place your order at the counter. Thank you!</p>
+</footer>
+
+<script>
+const filterButtons = document.querySelectorAll('.filter-btn');
+const menuItems = document.querySelectorAll('.menu-item');
+const orderItems = document.getElementById('orderItems');
+const totalPrice = document.getElementById('totalPrice');
+let orderList = [];
+let total = 0;
+
+const prices = {
+  "Special Fried Rice": 3,
+  "Sweet Iced Tea": 1,
+  "Chocolate Brownies": 2,
+  "Honey Grilled Chicken": 4,
+  "Milk Coffee with Palm Sugar": 2,
+  "Vanilla Ice Cream": 2
+};
+
+filterButtons.forEach(button => {
+  button.addEventListener('click', () => {
+    filterButtons.forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    const category = button.getAttribute('data-category');
+    menuItems.forEach(item => {
+      item.style.display = (category === 'all' || item.getAttribute('data-category') === category) ? 'block' : 'none';
+    });
+  });
+});
+
+function addToOrder(itemName) {
+  const li = document.createElement('li');
+  li.textContent = `${itemName} - $${prices[itemName]}`;
+  orderItems.appendChild(li);
+  orderList.push(itemName);
+  total += prices[itemName];
+  updateTotal();
+}
+
+function updateTotal() {
+  totalPrice.textContent = `Total: $${total}`;
+}
+
+function sendOrder() {
+  if (orderList.length === 0) {
+    alert("Your order list is empty!");
+    return;
+  }
+  const tableNumber = document.getElementById('tableNumber').value.trim();
+  if (tableNumber === "") {
+    alert("Please enter your table number!");
+    return;
+  }
+  let message = `Hello! I want to order:\n\n`;
+  orderList.forEach(item => {
+    message += `- ${item} ($${prices[item]})\n`;
+  });
+  message += `\nTotal: $${total}\nTable Number: ${tableNumber}`;
+  const phoneNumber = "6285231647788";
+  window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+}
+
+function clearOrder() {
+  orderItems.innerHTML = '';
+  orderList = [];
+  total = 0;
+  updateTotal();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  menuItems.forEach((item, index) => {
+    setTimeout(() => {
+      item.classList.add('show');
+    }, index * 100);
+  });
+});
+</script>
+
+</body>
+</html>
